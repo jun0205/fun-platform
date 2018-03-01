@@ -1,0 +1,114 @@
+# fun-platform
+# Docker containers CI
+version: 2
+
+jobs:
+
+  build:
+    machine:
+      docker_layer_caching: true
+    working_directory: ~/fun
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - edx-v1-{{ .Revision }}
+            - edx-v1-
+      - run:
+          name: Clone Open edX platform
+          command: |
+            bin/clone_repositories
+      - run:
+          name: Build container
+          command: |
+            docker build -t edxapp:latest .
+      - run:
+          name: Tag container
+          command: |
+            docker tag edxapp edxapp:ginkgo.1
+            docker images edxapp
+      - save_cache:
+          paths:
+            - ~/fun/src
+          key: edx-v1-{{ .Revision }}
+
+  build-dev:
+    machine:
+      docker_layer_caching: true
+    working_directory: ~/fun
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - edx-v1-{{ .Revision }}
+            - edx-v1-
+      - run:
+          name: Build container
+          command: |
+            docker build -t edxapp:dev -f Dockerfile_dev .
+      - run:
+          name: Tag container
+          command: |
+            docker tag edxapp:dev edxapp:ginkgo.1-dev
+            docker images edxapp
+      - run:
+          name: Save container
+          command: |
+            mkdir ~/docker
+            docker save edxapp | gzip > ~/docker/edxapp.tgz
+      - save_cache:
+          paths:
+            - ~/docker
+          key: docker-v1-{{ .Revision }}
+
+  test:
+    machine:
+      docker_layer_caching: true
+    working_directory: ~/fun
+    parallelism: 4
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - docker-v1-{{ .Revision }}
+            - docker-v1-
+      - restore_cache:
+          keys:
+            - edx-v1-{{ .Revision }}
+            - edx-v1-
+      - run:
+          name: Load cached container
+          command: |
+            gunzip -c ~/docker/edxapp.tgz | docker load
+      - run:
+          name: Run tests
+          command: |
+            docker-compose run --rm \
+              -e CIRCLECI \
+              -e CIRCLE_NODE_INDEX \
+              -e CIRCLE_NODE_TOTAL \
+              -e EDXAPP_TEST_MONGO_HOST='mongodb' \
+              -v "$HOME/fun/src/edx-platform/.git:/app/edx-platform/.git" \
+              lms-dev scripts/all-tests.sh
+
+workflows:
+  version: 2
+
+  edxapp:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - build-dev:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+      - test:
+          requires:
+            - build-dev
+          filters:
+            tags:
+              only: /.*/
