@@ -85,7 +85,8 @@ services:
       - rabbitmq
 
   nginx:
-    image: nginx:1.13
+    build: ./docker/nginx
+    image: fun-platform-nginx
     ports:
       - "8073:8071"
       - "8083:8081"
