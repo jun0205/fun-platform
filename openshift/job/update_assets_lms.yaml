@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fun-platform-update-assets-lms
+spec:
+  template:
+    metadata:
+      name: fun-platform-update-assets-lms
+    spec:
+      containers:
+      - name: fun-platform-update-assets-lms
+        image: docker-registry.default.svc:5000/campus-dev/fun-platform-edxapp:whitebrand
+        command: ["paver", "update_assets", "--settings", "docker_run", "lms"]
+        volumeMounts:
+        - mountPath: /config
+          name: volume-config
+        - mountPath: /data/static
+          name: edxapp-static
+      volumes:
+      - name: volume-config
+        configMap:
+          defaultMode: 420
+          name: config
+      - name: edxapp-static
+        persistentVolumeClaim:
+          claimName: static
+      restartPolicy: Never

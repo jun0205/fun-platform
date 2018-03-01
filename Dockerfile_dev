@@ -1,4 +1,4 @@
-FROM fun-platform-edxapp
+FROM fun-platform-edxapp:whitebrand
 
 # Install system dependencies
 # Removing the package lists after installation is a good practice

@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: fun-platform-nginx
+  name: fun-platform-nginx
+spec:
+  replicas: 1
+  selector:
+    app: fun-platform-nginx
+    deploymentconfig: fun-platform-nginx
+  template:
+    metadata:
+      labels:
+        app: fun-platform-nginx
+        deploymentconfig: fun-platform-nginx
+    spec:
+      containers:
+      - image: docker-registry.default.svc:5000/campus-dev/fun-platform-nginx:whitebrand
+        name: fun-platform-nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d
+          name: volume-conf
+        - mountPath: /data/media
+          name: volume-media
+          readOnly: true
+        - mountPath: /data/static
+          name: volume-static
+          readOnly: true
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: nginx
+        name: volume-conf
+      - name: volume-media
+        persistentVolumeClaim:
+          claimName: media
+      - name: volume-static
+        persistentVolumeClaim:
+          claimName: static

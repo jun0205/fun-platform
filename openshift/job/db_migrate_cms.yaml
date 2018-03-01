@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fun-platform-dbmigrate-cms
+spec:
+  template:
+    metadata:
+      name: fun-platform-dbmigrate-cms
+    spec:
+      containers:
+      - name: fun-platform-dbmigrate-cms
+        image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+        command: ["python", "manage.py", "cms", "migrate", "--settings", "docker_run"]
+        volumeMounts:
+        - mountPath: /config
+          name: volume-config
+        - mountPath: /data/media
+          name: edxapp-media
+      volumes:
+      - name: volume-config
+        configMap:
+          defaultMode: 420
+          name: config
+      - name: edxapp-media
+        persistentVolumeClaim:
+          claimName: media
+      restartPolicy: Never

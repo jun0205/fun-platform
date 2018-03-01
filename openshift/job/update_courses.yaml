@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fun-platform-update-courses
+spec:
+  template:
+    metadata:
+      name: fun-platform-update-courses
+    spec:
+      containers:
+      - name: fun-platform-update-courses
+        image: docker-registry.default.svc:5000/campus-dev/fun-platform-edxapp:whitebrand
+        command: ["python", "manage.py", "lms", "update_courses", "--settings", "docker_run"]
+        volumeMounts:
+        - mountPath: /config
+          name: volume-config
+      volumes:
+      - name: volume-config
+        configMap:
+          defaultMode: 420
+          name: config
+      restartPolicy: Never

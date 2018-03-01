@@ -1,0 +1,3331 @@
+apiVersion: v1
+items:
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    creationTimestamp: null
+    labels:
+      controller-uid: d27124e8-1337-11e8-8e15-02cd6ce74313
+      job-name: fun-platform-dbmigrate-cms
+    name: fun-platform-dbmigrate-cms
+  spec:
+    backoffLimit: 6
+    completions: 1
+    parallelism: 1
+    selector:
+      matchLabels:
+        controller-uid: d27124e8-1337-11e8-8e15-02cd6ce74313
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          controller-uid: d27124e8-1337-11e8-8e15-02cd6ce74313
+          job-name: fun-platform-dbmigrate-cms
+        name: fun-platform-dbmigrate-cms
+      spec:
+        containers:
+        - command:
+          - python
+          - manage.py
+          - cms
+          - migrate
+          - --settings
+          - docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-dbmigrate-cms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+        dnsPolicy: ClusterFirst
+        restartPolicy: Never
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+  status:
+    completionTime: 2018-02-16T16:39:54Z
+    conditions:
+    - lastProbeTime: 2018-02-16T16:39:54Z
+      lastTransitionTime: 2018-02-16T16:39:54Z
+      status: "True"
+      type: Complete
+    startTime: 2018-02-16T16:38:30Z
+    succeeded: 1
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    creationTimestamp: null
+    labels:
+      controller-uid: beaaa16e-1334-11e8-8e15-02cd6ce74313
+      job-name: fun-platform-dbmigrate-lms
+    name: fun-platform-dbmigrate-lms
+  spec:
+    backoffLimit: 6
+    completions: 1
+    parallelism: 1
+    selector:
+      matchLabels:
+        controller-uid: beaaa16e-1334-11e8-8e15-02cd6ce74313
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          controller-uid: beaaa16e-1334-11e8-8e15-02cd6ce74313
+          job-name: fun-platform-dbmigrate-lms
+        name: fun-platform-dbmigrate-lms
+      spec:
+        containers:
+        - command:
+          - python
+          - manage.py
+          - lms
+          - migrate
+          - --settings
+          - docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-dbmigrate-lms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+        dnsPolicy: ClusterFirst
+        restartPolicy: Never
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+  status:
+    completionTime: 2018-02-16T16:31:14Z
+    conditions:
+    - lastProbeTime: 2018-02-16T16:31:14Z
+      lastTransitionTime: 2018-02-16T16:31:14Z
+      status: "True"
+      type: Complete
+    startTime: 2018-02-16T16:16:29Z
+    succeeded: 1
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    creationTimestamp: null
+    labels:
+      controller-uid: d5bccbae-1337-11e8-8e15-02cd6ce74313
+      job-name: fun-platform-update-assets
+    name: fun-platform-update-assets
+  spec:
+    backoffLimit: 6
+    completions: 1
+    parallelism: 1
+    selector:
+      matchLabels:
+        controller-uid: d5bccbae-1337-11e8-8e15-02cd6ce74313
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          controller-uid: d5bccbae-1337-11e8-8e15-02cd6ce74313
+          job-name: fun-platform-update-assets
+        name: fun-platform-update-assets
+      spec:
+        containers:
+        - command:
+          - paver
+          - update_assets
+          - --settings
+          - docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-update-assets
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/static
+            name: edxapp-static
+        dnsPolicy: ClusterFirst
+        restartPolicy: Never
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-static
+          persistentVolumeClaim:
+            claimName: static
+  status:
+    completionTime: 2018-02-16T16:43:16Z
+    conditions:
+    - lastProbeTime: 2018-02-16T16:43:16Z
+      lastTransitionTime: 2018-02-16T16:43:16Z
+      status: "True"
+      type: Complete
+    startTime: 2018-02-16T16:38:36Z
+    succeeded: 1
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"DeploymentConfig","metadata":{"annotations":{},"labels":{"app":"fun-platform-cms"},"name":"fun-platform-cms","namespace":"campus-test"},"spec":{"replicas":1,"selector":{"app":"fun-platform-cms","deploymentconfig":"fun-platform-cms"},"template":{"metadata":{"labels":{"app":"fun-platform-cms","deploymentconfig":"fun-platform-cms"}},"spec":{"containers":[{"env":[{"name":"SERVICE_VARIANT","value":"cms"},{"name":"DJANGO_SETTINGS_MODULE","value":"cms.envs.docker_run"}],"image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","name":"fun-platform-cms","volumeMounts":[{"mountPath":"/config","name":"volume-config"},{"mountPath":"/data/media","name":"edxapp-media"},{"mountPath":"/data/static","name":"edxapp-static"}]}],"volumes":[{"configMap":{"defaultMode":420,"name":"config"},"name":"volume-config"},{"name":"edxapp-media","persistentVolumeClaim":{"claimName":"media"}},{"name":"edxapp-static","persistentVolumeClaim":{"claimName":"static"}}]}}}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-cms
+    name: fun-platform-cms
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-cms
+      deploymentconfig: fun-platform-cms
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: fun-platform-cms
+          deploymentconfig: fun-platform-cms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: cms
+          - name: DJANGO_SETTINGS_MODULE
+            value: cms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-cms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+          - mountPath: /data/static
+            name: edxapp-static
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+        - name: edxapp-static
+          persistentVolumeClaim:
+            claimName: static
+    test: false
+    triggers:
+    - type: ConfigChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"DeploymentConfig","metadata":{"annotations":{},"labels":{"app":"fun-platform-lms"},"name":"fun-platform-lms","namespace":"campus-test"},"spec":{"replicas":1,"selector":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"},"template":{"metadata":{"labels":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"}},"spec":{"containers":[{"env":[{"name":"SERVICE_VARIANT","value":"lms"},{"name":"DJANGO_SETTINGS_MODULE","value":"lms.envs.docker_run"}],"image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","name":"fun-platform-lms","volumeMounts":[{"mountPath":"/config","name":"volume-config"},{"mountPath":"/data/media","name":"edxapp-media"},{"mountPath":"/data/static","name":"edxapp-static"}]}],"volumes":[{"configMap":{"defaultMode":420,"name":"config"},"name":"volume-config"},{"name":"edxapp-media","persistentVolumeClaim":{"claimName":"media"}},{"name":"edxapp-static","persistentVolumeClaim":{"claimName":"static"}}]}}}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-lms
+    name: fun-platform-lms
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-lms
+      deploymentconfig: fun-platform-lms
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: fun-platform-lms
+          deploymentconfig: fun-platform-lms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: lms
+          - name: DJANGO_SETTINGS_MODULE
+            value: lms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-lms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+          - mountPath: /data/static
+            name: edxapp-static
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+        - name: edxapp-static
+          persistentVolumeClaim:
+            claimName: static
+    test: false
+    triggers:
+    - type: ConfigChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-nginx
+    name: fun-platform-nginx
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-nginx
+      deploymentconfig: fun-platform-nginx
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: fun-platform-nginx
+          deploymentconfig: fun-platform-nginx
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e
+          imagePullPolicy: Always
+          name: fun-platform-nginx
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: volume-wnu9m
+          - mountPath: /data/media
+            name: volume-s86s9
+            readOnly: true
+          - mountPath: /data/static
+            name: volume-s6ba4
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: nginx
+          name: volume-wnu9m
+        - name: volume-s86s9
+          persistentVolumeClaim:
+            claimName: media
+        - name: volume-s6ba4
+          persistentVolumeClaim:
+            claimName: static
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - fun-platform-nginx
+        from:
+          kind: ImageStreamTag
+          name: fun-platform-nginx:test
+          namespace: campus-test
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: memcached
+    name: memcached
+  spec:
+    replicas: 1
+    selector:
+      app: memcached
+      deploymentconfig: memcached
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: memcached
+          deploymentconfig: memcached
+      spec:
+        containers:
+        - image: memcached@sha256:60e2ce3e8215d7ca744bbbafd9b11b7a95961ea068e1ad51a6c361ad3a9bd34b
+          imagePullPolicy: Always
+          name: memcached
+          ports:
+          - containerPort: 11211
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - memcached
+        from:
+          kind: ImageStreamTag
+          name: memcached:latest
+          namespace: campus-test
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: mongodb
+    name: mongodb
+  spec:
+    replicas: 1
+    selector:
+      app: mongodb
+      deploymentconfig: mongodb
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: mongodb
+          deploymentconfig: mongodb
+      spec:
+        containers:
+        - env:
+          - name: MONGODB_ADMIN_PASSWORD
+            value: password
+          image: centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e
+          imagePullPolicy: Always
+          name: mongodb
+          ports:
+          - containerPort: 27017
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mongodb/data
+            name: mongodb-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: mongodb-1
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - mongodb
+        from:
+          kind: ImageStreamTag
+          name: mongodb:3.2
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: mysql
+    name: mysql
+  spec:
+    replicas: 1
+    selector:
+      app: mysql
+      deploymentconfig: mysql
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: mysql
+          deploymentconfig: mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            value: fun
+          - name: MYSQL_PASSWORD
+            value: password
+          - name: MYSQL_DATABASE
+            value: edxapp
+          image: centos/mysql-57-centos7@sha256:c169a0ce84104cc68cfe706b7fa3e4b5f1c038963c9384b613fb2f227ee57f97
+          imagePullPolicy: Always
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql/data
+            name: mysql-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: mysql-1
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - mysql
+        from:
+          kind: ImageStreamTag
+          name: mysql:5.7
+          namespace: openshift
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    name: fun-platform-edxapp
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+      generation: null
+      importPolicy: {}
+      name: test
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    name: fun-platform-nginx
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/campus-test/fun-platform-nginx:test
+      generation: null
+      importPolicy: {}
+      name: test
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/image.dockerRepositoryCheck: 2018-02-16T16:56:22Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: memcached
+    name: memcached
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+        openshift.io/imported-from: memcached
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/campus-test/memcached:latest
+      generation: 2
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Route","metadata":{"annotations":{},"labels":{"app":"fun-platform-cms"},"name":"cms","namespace":"campus-test"},"spec":{"host":"campus-test-cms.dev.fun-mooc.fr","port":{"targetPort":"8081-tcp"},"tls":{"termination":"edge"},"to":{"kind":"Service","name":"fun-platform-nginx","weight":100}}}
+    creationTimestamp: null
+    labels:
+      app: fun-platform-cms
+    name: cms
+  spec:
+    host: campus-test-cms.dev.fun-mooc.fr
+    port:
+      targetPort: 8081-tcp
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: fun-platform-nginx
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2018-02-16T16:22:51Z
+        status: "True"
+        type: Admitted
+      host: campus-test2-cms.dev.fun-mooc.fr
+      routerName: router
+      wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Route","metadata":{"annotations":{},"labels":{"app":"fun-platform-lms"},"name":"lms","namespace":"campus-test"},"spec":{"host":"campus-test-lms.dev.fun-mooc.fr","port":{"targetPort":"8071-tcp"},"tls":{"termination":"edge"},"to":{"kind":"Service","name":"fun-platform-nginx","weight":100}}}
+    creationTimestamp: null
+    labels:
+      app: fun-platform-lms
+    name: lms
+  spec:
+    host: campus-test2-lms.dev.fun-mooc.fr
+    port:
+      targetPort: 8071-tcp
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: fun-platform-nginx
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2018-02-16T15:16:17Z
+        status: "True"
+        type: Admitted
+      host: campus-test-lms.dev.fun-mooc.fr
+      routerName: router
+      wildcardPolicy: None
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"campus-test","name":"fun-platform-cms-2","uid":"e779f43e-1337-11e8-8e15-02cd6ce74313","apiVersion":"v1","resourceVersion":"11859705"}}
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: fun-platform-cms
+      openshift.io/deployment.name: fun-platform-cms-2
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: fun-platform-cms-2-
+    labels:
+      app: fun-platform-cms
+      deployment: fun-platform-cms-2
+      deploymentconfig: fun-platform-cms
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: fun-platform-cms-2
+      uid: e779f43e-1337-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - env:
+      - name: SERVICE_VARIANT
+        value: cms
+      - name: DJANGO_SETTINGS_MODULE
+        value: cms.envs.docker_run
+      image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+      imagePullPolicy: IfNotPresent
+      name: fun-platform-cms
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config
+        name: volume-config
+      - mountPath: /data/media
+        name: edxapp-media
+      - mountPath: /data/static
+        name: edxapp-static
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: config
+      name: volume-config
+    - name: edxapp-media
+      persistentVolumeClaim:
+        claimName: media
+    - name: edxapp-static
+      persistentVolumeClaim:
+        claimName: static
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"Job","namespace":"campus-test","name":"fun-platform-dbmigrate-cms","uid":"d27124e8-1337-11e8-8e15-02cd6ce74313","apiVersion":"batch","resourceVersion":"11859539"}}
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: fun-platform-dbmigrate-cms-
+    labels:
+      controller-uid: d27124e8-1337-11e8-8e15-02cd6ce74313
+      job-name: fun-platform-dbmigrate-cms
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Job
+      name: fun-platform-dbmigrate-cms
+      uid: d27124e8-1337-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - command:
+      - python
+      - manage.py
+      - cms
+      - migrate
+      - --settings
+      - docker_run
+      image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+      imagePullPolicy: IfNotPresent
+      name: fun-platform-dbmigrate-cms
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config
+        name: volume-config
+      - mountPath: /data/media
+        name: edxapp-media
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Never
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: config
+      name: volume-config
+    - name: edxapp-media
+      persistentVolumeClaim:
+        claimName: media
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"Job","namespace":"campus-test","name":"fun-platform-dbmigrate-lms","uid":"beaaa16e-1334-11e8-8e15-02cd6ce74313","apiVersion":"batch","resourceVersion":"11856193"}}
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: fun-platform-dbmigrate-lms-
+    labels:
+      controller-uid: beaaa16e-1334-11e8-8e15-02cd6ce74313
+      job-name: fun-platform-dbmigrate-lms
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Job
+      name: fun-platform-dbmigrate-lms
+      uid: beaaa16e-1334-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - command:
+      - python
+      - manage.py
+      - lms
+      - migrate
+      - --settings
+      - docker_run
+      image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+      imagePullPolicy: IfNotPresent
+      name: fun-platform-dbmigrate-lms
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config
+        name: volume-config
+      - mountPath: /data/media
+        name: edxapp-media
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Never
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: config
+      name: volume-config
+    - name: edxapp-media
+      persistentVolumeClaim:
+        claimName: media
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"campus-test","name":"fun-platform-lms-3","uid":"e9fddb3e-1337-11e8-8e15-02cd6ce74313","apiVersion":"v1","resourceVersion":"11859730"}}
+      openshift.io/deployment-config.latest-version: "3"
+      openshift.io/deployment-config.name: fun-platform-lms
+      openshift.io/deployment.name: fun-platform-lms-3
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: fun-platform-lms-3-
+    labels:
+      app: fun-platform-lms
+      deployment: fun-platform-lms-3
+      deploymentconfig: fun-platform-lms
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: fun-platform-lms-3
+      uid: e9fddb3e-1337-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - env:
+      - name: SERVICE_VARIANT
+        value: lms
+      - name: DJANGO_SETTINGS_MODULE
+        value: lms.envs.docker_run
+      image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+      imagePullPolicy: IfNotPresent
+      name: fun-platform-lms
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config
+        name: volume-config
+      - mountPath: /data/media
+        name: edxapp-media
+      - mountPath: /data/static
+        name: edxapp-static
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: config
+      name: volume-config
+    - name: edxapp-media
+      persistentVolumeClaim:
+        claimName: media
+    - name: edxapp-static
+      persistentVolumeClaim:
+        claimName: static
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"campus-test","name":"fun-platform-nginx-5","uid":"f0d0c56d-133b-11e8-8e15-02cd6ce74313","apiVersion":"v1","resourceVersion":"11864315"}}
+      openshift.io/deployment-config.latest-version: "5"
+      openshift.io/deployment-config.name: fun-platform-nginx
+      openshift.io/deployment.name: fun-platform-nginx-5
+      openshift.io/generated-by: OpenShiftWebConsole
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: fun-platform-nginx-5-
+    labels:
+      app: fun-platform-nginx
+      deployment: fun-platform-nginx-5
+      deploymentconfig: fun-platform-nginx
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: fun-platform-nginx-5
+      uid: f0d0c56d-133b-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - image: docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e
+      imagePullPolicy: Always
+      name: fun-platform-nginx
+      ports:
+      - containerPort: 80
+        protocol: TCP
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /etc/nginx/conf.d
+        name: volume-wnu9m
+      - mountPath: /data/media
+        name: volume-s86s9
+        readOnly: true
+      - mountPath: /data/static
+        name: volume-s6ba4
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: nginx
+      name: volume-wnu9m
+    - name: volume-s86s9
+      persistentVolumeClaim:
+        claimName: media
+    - name: volume-s6ba4
+      persistentVolumeClaim:
+        claimName: static
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"Job","namespace":"campus-test","name":"fun-platform-update-assets","uid":"d5bccbae-1337-11e8-8e15-02cd6ce74313","apiVersion":"batch","resourceVersion":"11859566"}}
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: fun-platform-update-assets-
+    labels:
+      controller-uid: d5bccbae-1337-11e8-8e15-02cd6ce74313
+      job-name: fun-platform-update-assets
+    ownerReferences:
+    - apiVersion: batch/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Job
+      name: fun-platform-update-assets
+      uid: d5bccbae-1337-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - command:
+      - paver
+      - update_assets
+      - --settings
+      - docker_run
+      image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+      imagePullPolicy: IfNotPresent
+      name: fun-platform-update-assets
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config
+        name: volume-config
+      - mountPath: /data/static
+        name: edxapp-static
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Never
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: config
+      name: volume-config
+    - name: edxapp-static
+      persistentVolumeClaim:
+        claimName: static
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"campus-test","name":"memcached-1","uid":"5145de01-133a-11e8-8e15-02cd6ce74313","apiVersion":"v1","resourceVersion":"11862459"}}
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: memcached
+      openshift.io/deployment.name: memcached-1
+      openshift.io/generated-by: OpenShiftWebConsole
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: memcached-1-
+    labels:
+      app: memcached
+      deployment: memcached-1
+      deploymentconfig: memcached
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: memcached-1
+      uid: 5145de01-133a-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - image: memcached@sha256:60e2ce3e8215d7ca744bbbafd9b11b7a95961ea068e1ad51a6c361ad3a9bd34b
+      imagePullPolicy: Always
+      name: memcached
+      ports:
+      - containerPort: 11211
+        protocol: TCP
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"campus-test","name":"mongodb-2","uid":"9f212aa4-12fc-11e8-8e15-02cd6ce74313","apiVersion":"v1","resourceVersion":"11792158"}}
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: mongodb
+      openshift.io/deployment.name: mongodb-2
+      openshift.io/generated-by: OpenShiftWebConsole
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: mongodb-2-
+    labels:
+      app: mongodb
+      deployment: mongodb-2
+      deploymentconfig: mongodb
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: mongodb-2
+      uid: 9f212aa4-12fc-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - env:
+      - name: MONGODB_ADMIN_PASSWORD
+        value: password
+      image: centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e
+      imagePullPolicy: Always
+      name: mongodb
+      ports:
+      - containerPort: 27017
+        protocol: TCP
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/lib/mongodb/data
+        name: mongodb-1
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - emptyDir: {}
+      name: mongodb-1
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubernetes.io/created-by: |
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"campus-test","name":"mysql-1","uid":"251ab713-12fc-11e8-8e15-02cd6ce74313","apiVersion":"v1","resourceVersion":"11791532"}}
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: mysql
+      openshift.io/deployment.name: mysql-1
+      openshift.io/generated-by: OpenShiftWebConsole
+      openshift.io/scc: restricted
+    creationTimestamp: null
+    generateName: mysql-1-
+    labels:
+      app: mysql
+      deployment: mysql-1
+      deploymentconfig: mysql
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicationController
+      name: mysql-1
+      uid: 251ab713-12fc-11e8-8e15-02cd6ce74313
+  spec:
+    containers:
+    - env:
+      - name: MYSQL_USER
+        value: fun
+      - name: MYSQL_PASSWORD
+        value: password
+      - name: MYSQL_DATABASE
+        value: edxapp
+      image: centos/mysql-57-centos7@sha256:c169a0ce84104cc68cfe706b7fa3e4b5f1c038963c9384b613fb2f227ee57f97
+      imagePullPolicy: Always
+      name: mysql
+      ports:
+      - containerPort: 3306
+        protocol: TCP
+      resources: {}
+      securityContext:
+        capabilities:
+          drop:
+          - KILL
+          - MKNOD
+          - SETGID
+          - SETUID
+        privileged: false
+        runAsUser: 1000130000
+        seLinuxOptions:
+          level: s0:c11,c10
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/lib/mysql/data
+        name: mysql-1
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hfm78
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    imagePullSecrets:
+    - name: default-dockercfg-5k58n
+    nodeName: os-node-0.novalocal
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000130000
+      seLinuxOptions:
+        level: s0:c11,c10
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    volumes:
+    - emptyDir: {}
+      name: mysql-1
+    - name: default-token-hfm78
+      secret:
+        defaultMode: 420
+        secretName: default-token-hfm78
+  status:
+    phase: Pending
+    qosClass: BestEffort
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-02-16 16:17:25 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 16:17:18 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-cms-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: fun-platform-cms
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-cms","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-cms","uid":"dc2afd6d-1334-11e8-8e15-02cd6ce74313","resourceVersion":"11856344","generation":1,"creationTimestamp":"2018-02-16T16:17:18Z","labels":{"app":"fun-platform-cms"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"app":"fun-platform-cms","deploymentconfig":"fun-platform-cms"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-cms","deploymentconfig":"fun-platform-cms"}},"spec":{"volumes":[{"name":"volume-config","configMap":{"name":"config","defaultMode":420}},{"name":"edxapp-media","persistentVolumeClaim":{"claimName":"media"}}],"containers":[{"name":"fun-platform-cms","image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","env":[{"name":"SERVICE_VARIANT","value":"cms"},{"name":"DJANGO_SETTINGS_MODULE","value":"cms.envs.docker_run"}],"resources":{},"volumeMounts":[{"name":"volume-config","mountPath":"/config"},{"name":"edxapp-media","mountPath":"/data/media"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T16:17:18Z","lastTransitionTime":"2018-02-16T16:17:18Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-cms
+      openshift.io/deployment-config.name: fun-platform-cms
+    name: fun-platform-cms-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-cms
+      uid: dc2afd6d-1334-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 0
+    selector:
+      app: fun-platform-cms
+      deployment: fun-platform-cms-1
+      deploymentconfig: fun-platform-cms
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: fun-platform-cms
+          openshift.io/deployment.name: fun-platform-cms-1
+        creationTimestamp: null
+        labels:
+          app: fun-platform-cms
+          deployment: fun-platform-cms-1
+          deploymentconfig: fun-platform-cms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: cms
+          - name: DJANGO_SETTINGS_MODULE
+            value: cms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-cms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-02-16 16:39:19 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 16:39:06 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-cms-2-deploy
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: fun-platform-cms
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-cms","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-cms","uid":"dc2afd6d-1334-11e8-8e15-02cd6ce74313","resourceVersion":"11859655","generation":2,"creationTimestamp":"2018-02-16T16:17:18Z","labels":{"app":"fun-platform-cms"},"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"kind\":\"DeploymentConfig\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"fun-platform-cms\"},\"name\":\"fun-platform-cms\",\"namespace\":\"campus-test\"},\"spec\":{\"replicas\":1,\"selector\":{\"app\":\"fun-platform-cms\",\"deploymentconfig\":\"fun-platform-cms\"},\"template\":{\"metadata\":{\"labels\":{\"app\":\"fun-platform-cms\",\"deploymentconfig\":\"fun-platform-cms\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"SERVICE_VARIANT\",\"value\":\"cms\"},{\"name\":\"DJANGO_SETTINGS_MODULE\",\"value\":\"cms.envs.docker_run\"}],\"image\":\"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test\",\"name\":\"fun-platform-cms\",\"volumeMounts\":[{\"mountPath\":\"/config\",\"name\":\"volume-config\"},{\"mountPath\":\"/data/media\",\"name\":\"edxapp-media\"},{\"mountPath\":\"/data/static\",\"name\":\"edxapp-static\"}]}],\"volumes\":[{\"configMap\":{\"defaultMode\":420,\"name\":\"config\"},\"name\":\"volume-config\"},{\"name\":\"edxapp-media\",\"persistentVolumeClaim\":{\"claimName\":\"media\"}},{\"name\":\"edxapp-static\",\"persistentVolumeClaim\":{\"claimName\":\"static\"}}]}}}}\n"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"app":"fun-platform-cms","deploymentconfig":"fun-platform-cms"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-cms","deploymentconfig":"fun-platform-cms"}},"spec":{"volumes":[{"name":"volume-config","configMap":{"name":"config","defaultMode":420}},{"name":"edxapp-media","persistentVolumeClaim":{"claimName":"media"}},{"name":"edxapp-static","persistentVolumeClaim":{"claimName":"static"}}],"containers":[{"name":"fun-platform-cms","image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","env":[{"name":"SERVICE_VARIANT","value":"cms"},{"name":"DJANGO_SETTINGS_MODULE","value":"cms.envs.docker_run"}],"resources":{},"volumeMounts":[{"name":"volume-config","mountPath":"/config"},{"name":"edxapp-media","mountPath":"/data/media"},{"name":"edxapp-static","mountPath":"/data/static"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":2,"replicas":1,"updatedReplicas":0,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2018-02-16T16:17:25Z","lastTransitionTime":"2018-02-16T16:17:25Z","message":"Deployment config has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-02-16T16:17:26Z","lastTransitionTime":"2018-02-16T16:17:22Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"fun-platform-cms-1\" successfully rolled out"}],"readyReplicas":1}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-cms
+      openshift.io/deployment-config.name: fun-platform-cms
+    name: fun-platform-cms-2
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-cms
+      uid: dc2afd6d-1334-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-cms
+      deployment: fun-platform-cms-2
+      deploymentconfig: fun-platform-cms
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "2"
+          openshift.io/deployment-config.name: fun-platform-cms
+          openshift.io/deployment.name: fun-platform-cms-2
+        creationTimestamp: null
+        labels:
+          app: fun-platform-cms
+          deployment: fun-platform-cms-2
+          deploymentconfig: fun-platform-cms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: cms
+          - name: DJANGO_SETTINGS_MODULE
+            value: cms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-cms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+          - mountPath: /data/static
+            name: edxapp-static
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+        - name: edxapp-static
+          persistentVolumeClaim:
+            claimName: static
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-02-16 15:34:27 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 15:34:20 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-lms-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: fun-platform-lms
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-lms","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-lms","uid":"db2dc1dc-132e-11e8-8e15-02cd6ce74313","resourceVersion":"11849159","generation":1,"creationTimestamp":"2018-02-16T15:34:20Z","labels":{"app":"fun-platform-lms"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"}},"spec":{"volumes":[{"name":"volume-config","configMap":{"name":"config","defaultMode":420}}],"containers":[{"name":"fun-platform-lms","image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","env":[{"name":"SERVICE_VARIANT","value":"lms"},{"name":"DJANGO_SETTINGS_MODULE","value":"lms.envs.docker_run"}],"resources":{},"volumeMounts":[{"name":"volume-config","mountPath":"/config"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T15:34:20Z","lastTransitionTime":"2018-02-16T15:34:20Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-lms
+      openshift.io/deployment-config.name: fun-platform-lms
+    name: fun-platform-lms-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-lms
+      uid: db2dc1dc-132e-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 0
+    selector:
+      app: fun-platform-lms
+      deployment: fun-platform-lms-1
+      deploymentconfig: fun-platform-lms
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: fun-platform-lms
+          openshift.io/deployment.name: fun-platform-lms-1
+        creationTimestamp: null
+        labels:
+          app: fun-platform-lms
+          deployment: fun-platform-lms-1
+          deploymentconfig: fun-platform-lms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: lms
+          - name: DJANGO_SETTINGS_MODULE
+            value: lms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-lms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-02-16 16:12:16 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 16:12:07 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-lms-2-deploy
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: fun-platform-lms
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-lms","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-lms","uid":"db2dc1dc-132e-11e8-8e15-02cd6ce74313","resourceVersion":"11855465","generation":2,"creationTimestamp":"2018-02-16T15:34:20Z","labels":{"app":"fun-platform-lms"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"}},"spec":{"volumes":[{"name":"volume-config","configMap":{"name":"config","defaultMode":420}},{"name":"edxapp-media","persistentVolumeClaim":{"claimName":"media"}}],"containers":[{"name":"fun-platform-lms","image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","env":[{"name":"SERVICE_VARIANT","value":"lms"},{"name":"DJANGO_SETTINGS_MODULE","value":"lms.envs.docker_run"}],"resources":{},"volumeMounts":[{"name":"volume-config","mountPath":"/config"},{"name":"edxapp-media","mountPath":"/data/media"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":2,"replicas":1,"updatedReplicas":0,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2018-02-16T15:34:27Z","lastTransitionTime":"2018-02-16T15:34:27Z","message":"Deployment config has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-02-16T15:34:28Z","lastTransitionTime":"2018-02-16T15:34:24Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"fun-platform-lms-1\" successfully rolled out"}],"readyReplicas":1}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-lms
+      openshift.io/deployment-config.name: fun-platform-lms
+    name: fun-platform-lms-2
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-lms
+      uid: db2dc1dc-132e-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 0
+    selector:
+      app: fun-platform-lms
+      deployment: fun-platform-lms-2
+      deploymentconfig: fun-platform-lms
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "2"
+          openshift.io/deployment-config.name: fun-platform-lms
+          openshift.io/deployment.name: fun-platform-lms-2
+        creationTimestamp: null
+        labels:
+          app: fun-platform-lms
+          deployment: fun-platform-lms-2
+          deploymentconfig: fun-platform-lms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: lms
+          - name: DJANGO_SETTINGS_MODULE
+            value: lms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-lms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-02-16 16:39:24 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 16:39:10 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-lms-3-deploy
+      openshift.io/deployment-config.latest-version: "3"
+      openshift.io/deployment-config.name: fun-platform-lms
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-lms","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-lms","uid":"db2dc1dc-132e-11e8-8e15-02cd6ce74313","resourceVersion":"11859682","generation":3,"creationTimestamp":"2018-02-16T15:34:20Z","labels":{"app":"fun-platform-lms"},"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"kind\":\"DeploymentConfig\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"fun-platform-lms\"},\"name\":\"fun-platform-lms\",\"namespace\":\"campus-test\"},\"spec\":{\"replicas\":1,\"selector\":{\"app\":\"fun-platform-lms\",\"deploymentconfig\":\"fun-platform-lms\"},\"template\":{\"metadata\":{\"labels\":{\"app\":\"fun-platform-lms\",\"deploymentconfig\":\"fun-platform-lms\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"SERVICE_VARIANT\",\"value\":\"lms\"},{\"name\":\"DJANGO_SETTINGS_MODULE\",\"value\":\"lms.envs.docker_run\"}],\"image\":\"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test\",\"name\":\"fun-platform-lms\",\"volumeMounts\":[{\"mountPath\":\"/config\",\"name\":\"volume-config\"},{\"mountPath\":\"/data/media\",\"name\":\"edxapp-media\"},{\"mountPath\":\"/data/static\",\"name\":\"edxapp-static\"}]}],\"volumes\":[{\"configMap\":{\"defaultMode\":420,\"name\":\"config\"},\"name\":\"volume-config\"},{\"name\":\"edxapp-media\",\"persistentVolumeClaim\":{\"claimName\":\"media\"}},{\"name\":\"edxapp-static\",\"persistentVolumeClaim\":{\"claimName\":\"static\"}}]}}}}\n"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"}},"spec":{"volumes":[{"name":"volume-config","configMap":{"name":"config","defaultMode":420}},{"name":"edxapp-media","persistentVolumeClaim":{"claimName":"media"}},{"name":"edxapp-static","persistentVolumeClaim":{"claimName":"static"}}],"containers":[{"name":"fun-platform-lms","image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","env":[{"name":"SERVICE_VARIANT","value":"lms"},{"name":"DJANGO_SETTINGS_MODULE","value":"lms.envs.docker_run"}],"resources":{},"volumeMounts":[{"name":"volume-config","mountPath":"/config"},{"name":"edxapp-media","mountPath":"/data/media"},{"name":"edxapp-static","mountPath":"/data/static"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":3,"observedGeneration":3,"replicas":1,"updatedReplicas":0,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2018-02-16T15:34:27Z","lastTransitionTime":"2018-02-16T15:34:27Z","message":"Deployment config has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-02-16T16:12:16Z","lastTransitionTime":"2018-02-16T16:12:15Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"fun-platform-lms-2\" successfully rolled out"}],"readyReplicas":1}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-lms
+      openshift.io/deployment-config.name: fun-platform-lms
+    name: fun-platform-lms-3
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-lms
+      uid: db2dc1dc-132e-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-lms
+      deployment: fun-platform-lms-3
+      deploymentconfig: fun-platform-lms
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "3"
+          openshift.io/deployment-config.name: fun-platform-lms
+          openshift.io/deployment.name: fun-platform-lms-3
+        creationTimestamp: null
+        labels:
+          app: fun-platform-lms
+          deployment: fun-platform-lms-3
+          deploymentconfig: fun-platform-lms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: lms
+          - name: DJANGO_SETTINGS_MODULE
+            value: lms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-lms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+          - mountPath: /data/static
+            name: edxapp-static
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+        - name: edxapp-static
+          persistentVolumeClaim:
+            claimName: static
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-02-16 15:03:14 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 15:02:57 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-nginx-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: fun-platform-nginx
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-nginx","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-nginx","uid":"788bb389-132a-11e8-8e15-02cd6ce74313","resourceVersion":"11844226","generation":2,"creationTimestamp":"2018-02-16T15:02:56Z","labels":{"app":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["fun-platform-nginx"],"from":{"kind":"ImageStreamTag","namespace":"campus-test","name":"fun-platform-nginx:test"},"lastTriggeredImage":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e"}}],"replicas":1,"test":false,"selector":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"containers":[{"name":"fun-platform-nginx","image":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e","ports":[{"containerPort":80,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":2,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T15:02:56Z","lastTransitionTime":"2018-02-16T15:02:56Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-nginx
+      openshift.io/deployment-config.name: fun-platform-nginx
+    name: fun-platform-nginx-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-nginx
+      uid: 788bb389-132a-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 0
+    selector:
+      app: fun-platform-nginx
+      deployment: fun-platform-nginx-1
+      deploymentconfig: fun-platform-nginx
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: fun-platform-nginx
+          openshift.io/deployment.name: fun-platform-nginx-1
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: fun-platform-nginx
+          deployment: fun-platform-nginx-1
+          deploymentconfig: fun-platform-nginx
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e
+          imagePullPolicy: Always
+          name: fun-platform-nginx
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-02-16 15:04:45 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 15:03:53 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-nginx-2-deploy
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: fun-platform-nginx
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-nginx","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-nginx","uid":"788bb389-132a-11e8-8e15-02cd6ce74313","resourceVersion":"11844428","generation":3,"creationTimestamp":"2018-02-16T15:02:56Z","labels":{"app":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["fun-platform-nginx"],"from":{"kind":"ImageStreamTag","namespace":"campus-test","name":"fun-platform-nginx:test"},"lastTriggeredImage":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e"}}],"replicas":1,"test":false,"selector":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"volumes":[{"name":"volume-wnu9m","configMap":{"name":"nginx","defaultMode":420}}],"containers":[{"name":"fun-platform-nginx","image":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e","ports":[{"containerPort":80,"protocol":"TCP"}],"resources":{},"volumeMounts":[{"name":"volume-wnu9m","mountPath":"/etc/nginx/conf.d"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":3,"replicas":1,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":1,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Progressing","status":"True","lastUpdateTime":"2018-02-16T15:03:14Z","lastTransitionTime":"2018-02-16T15:03:03Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"fun-platform-nginx-1\" successfully rolled out"},{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T15:03:15Z","lastTransitionTime":"2018-02-16T15:03:15Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-nginx
+      openshift.io/deployment-config.name: fun-platform-nginx
+    name: fun-platform-nginx-2
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-nginx
+      uid: 788bb389-132a-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 0
+    selector:
+      app: fun-platform-nginx
+      deployment: fun-platform-nginx-2
+      deploymentconfig: fun-platform-nginx
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "2"
+          openshift.io/deployment-config.name: fun-platform-nginx
+          openshift.io/deployment.name: fun-platform-nginx-2
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: fun-platform-nginx
+          deployment: fun-platform-nginx-2
+          deploymentconfig: fun-platform-nginx
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e
+          imagePullPolicy: Always
+          name: fun-platform-nginx
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: volume-wnu9m
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: nginx
+          name: volume-wnu9m
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-02-16 15:13:00 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 15:12:52 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-nginx-3-deploy
+      openshift.io/deployment-config.latest-version: "3"
+      openshift.io/deployment-config.name: fun-platform-nginx
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: manual change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-nginx","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-nginx","uid":"788bb389-132a-11e8-8e15-02cd6ce74313","resourceVersion":"11845899","generation":4,"creationTimestamp":"2018-02-16T15:02:56Z","labels":{"app":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["fun-platform-nginx"],"from":{"kind":"ImageStreamTag","namespace":"campus-test","name":"fun-platform-nginx:test"},"lastTriggeredImage":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e"}}],"replicas":1,"test":false,"selector":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"volumes":[{"name":"volume-wnu9m","configMap":{"name":"nginx","defaultMode":420}}],"containers":[{"name":"fun-platform-nginx","image":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e","ports":[{"containerPort":80,"protocol":"TCP"}],"resources":{},"volumeMounts":[{"name":"volume-wnu9m","mountPath":"/etc/nginx/conf.d"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":3,"observedGeneration":3,"replicas":1,"updatedReplicas":1,"availableReplicas":0,"unavailableReplicas":1,"details":{"message":"manual change","causes":[{"type":"Manual"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T15:04:44Z","lastTransitionTime":"2018-02-16T15:04:44Z","message":"Deployment config does not have minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-02-16T15:04:45Z","lastTransitionTime":"2018-02-16T15:04:44Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"fun-platform-nginx-2\" successfully rolled out"}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-nginx
+      openshift.io/deployment-config.name: fun-platform-nginx
+    name: fun-platform-nginx-3
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-nginx
+      uid: 788bb389-132a-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 0
+    selector:
+      app: fun-platform-nginx
+      deployment: fun-platform-nginx-3
+      deploymentconfig: fun-platform-nginx
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "3"
+          openshift.io/deployment-config.name: fun-platform-nginx
+          openshift.io/deployment.name: fun-platform-nginx-3
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: fun-platform-nginx
+          deployment: fun-platform-nginx-3
+          deploymentconfig: fun-platform-nginx
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e
+          imagePullPolicy: Always
+          name: fun-platform-nginx
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: volume-wnu9m
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: nginx
+          name: volume-wnu9m
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/original-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-02-16 17:06:21 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 17:06:11 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-nginx-4-deploy
+      openshift.io/deployment-config.latest-version: "4"
+      openshift.io/deployment-config.name: fun-platform-nginx
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-nginx","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-nginx","uid":"788bb389-132a-11e8-8e15-02cd6ce74313","resourceVersion":"11863962","generation":5,"creationTimestamp":"2018-02-16T15:02:56Z","labels":{"app":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["fun-platform-nginx"],"from":{"kind":"ImageStreamTag","namespace":"campus-test","name":"fun-platform-nginx:test"},"lastTriggeredImage":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e"}}],"replicas":1,"test":false,"selector":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"volumes":[{"name":"volume-wnu9m","configMap":{"name":"nginx","defaultMode":420}},{"name":"volume-s86s9","persistentVolumeClaim":{"claimName":"media"}}],"containers":[{"name":"fun-platform-nginx","image":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e","ports":[{"containerPort":80,"protocol":"TCP"}],"resources":{},"volumeMounts":[{"name":"volume-wnu9m","mountPath":"/etc/nginx/conf.d"},{"name":"volume-s86s9","readOnly":true,"mountPath":"/data/media"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":4,"observedGeneration":5,"replicas":1,"updatedReplicas":0,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2018-02-16T15:12:59Z","lastTransitionTime":"2018-02-16T15:12:59Z","message":"Deployment config has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-02-16T15:13:01Z","lastTransitionTime":"2018-02-16T15:12:59Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"fun-platform-nginx-3\" successfully rolled out"}],"readyReplicas":1}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-nginx
+      openshift.io/deployment-config.name: fun-platform-nginx
+    name: fun-platform-nginx-4
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-nginx
+      uid: 788bb389-132a-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 0
+    selector:
+      app: fun-platform-nginx
+      deployment: fun-platform-nginx-4
+      deploymentconfig: fun-platform-nginx
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "4"
+          openshift.io/deployment-config.name: fun-platform-nginx
+          openshift.io/deployment.name: fun-platform-nginx-4
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: fun-platform-nginx
+          deployment: fun-platform-nginx-4
+          deploymentconfig: fun-platform-nginx
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e
+          imagePullPolicy: Always
+          name: fun-platform-nginx
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: volume-wnu9m
+          - mountPath: /data/media
+            name: volume-s86s9
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: nginx
+          name: volume-wnu9m
+        - name: volume-s86s9
+          persistentVolumeClaim:
+            claimName: media
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-02-16 17:08:08 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 17:07:59 +0000 UTC
+      openshift.io/deployer-pod.name: fun-platform-nginx-5-deploy
+      openshift.io/deployment-config.latest-version: "5"
+      openshift.io/deployment-config.name: fun-platform-nginx
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: ""
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"fun-platform-nginx","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/fun-platform-nginx","uid":"788bb389-132a-11e8-8e15-02cd6ce74313","resourceVersion":"11864285","generation":6,"creationTimestamp":"2018-02-16T15:02:56Z","labels":{"app":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["fun-platform-nginx"],"from":{"kind":"ImageStreamTag","namespace":"campus-test","name":"fun-platform-nginx:test"},"lastTriggeredImage":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e"}}],"replicas":1,"test":false,"selector":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"fun-platform-nginx","deploymentconfig":"fun-platform-nginx"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"volumes":[{"name":"volume-wnu9m","configMap":{"name":"nginx","defaultMode":420}},{"name":"volume-s86s9","persistentVolumeClaim":{"claimName":"media"}},{"name":"volume-s6ba4","persistentVolumeClaim":{"claimName":"static"}}],"containers":[{"name":"fun-platform-nginx","image":"docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e","ports":[{"containerPort":80,"protocol":"TCP"}],"resources":{},"volumeMounts":[{"name":"volume-wnu9m","mountPath":"/etc/nginx/conf.d"},{"name":"volume-s86s9","readOnly":true,"mountPath":"/data/media"},{"name":"volume-s6ba4","readOnly":true,"mountPath":"/data/static"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":5,"observedGeneration":6,"replicas":1,"updatedReplicas":0,"availableReplicas":1,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2018-02-16T15:12:59Z","lastTransitionTime":"2018-02-16T15:12:59Z","message":"Deployment config has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-02-16T17:06:22Z","lastTransitionTime":"2018-02-16T17:06:20Z","reason":"NewReplicationControllerAvailable","message":"replication controller \"fun-platform-nginx-4\" successfully rolled out"}],"readyReplicas":1}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-nginx
+      openshift.io/deployment-config.name: fun-platform-nginx
+    name: fun-platform-nginx-5
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: fun-platform-nginx
+      uid: 788bb389-132a-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-nginx
+      deployment: fun-platform-nginx-5
+      deploymentconfig: fun-platform-nginx
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "5"
+          openshift.io/deployment-config.name: fun-platform-nginx
+          openshift.io/deployment.name: fun-platform-nginx-5
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: fun-platform-nginx
+          deployment: fun-platform-nginx-5
+          deploymentconfig: fun-platform-nginx
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e
+          imagePullPolicy: Always
+          name: fun-platform-nginx
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: volume-wnu9m
+          - mountPath: /data/media
+            name: volume-s86s9
+            readOnly: true
+          - mountPath: /data/static
+            name: volume-s6ba4
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: nginx
+          name: volume-wnu9m
+        - name: volume-s86s9
+          persistentVolumeClaim:
+            claimName: media
+        - name: volume-s6ba4
+          persistentVolumeClaim:
+            claimName: static
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-02-16 16:56:32 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 16:56:22 +0000 UTC
+      openshift.io/deployer-pod.name: memcached-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: memcached
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"memcached","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/memcached","uid":"50986424-133a-11e8-8e15-02cd6ce74313","resourceVersion":"11862436","generation":2,"creationTimestamp":"2018-02-16T16:56:21Z","labels":{"app":"memcached"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["memcached"],"from":{"kind":"ImageStreamTag","namespace":"campus-test","name":"memcached:latest"},"lastTriggeredImage":"memcached@sha256:60e2ce3e8215d7ca744bbbafd9b11b7a95961ea068e1ad51a6c361ad3a9bd34b"}}],"replicas":1,"test":false,"selector":{"app":"memcached","deploymentconfig":"memcached"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"memcached","deploymentconfig":"memcached"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"containers":[{"name":"memcached","image":"memcached@sha256:60e2ce3e8215d7ca744bbbafd9b11b7a95961ea068e1ad51a6c361ad3a9bd34b","ports":[{"containerPort":11211,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":2,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T16:56:21Z","lastTransitionTime":"2018-02-16T16:56:21Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: memcached
+      openshift.io/deployment-config.name: memcached
+    name: memcached-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: memcached
+      uid: 50986424-133a-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 1
+    selector:
+      app: memcached
+      deployment: memcached-1
+      deploymentconfig: memcached
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: memcached
+          openshift.io/deployment.name: memcached-1
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: memcached
+          deployment: memcached-1
+          deploymentconfig: memcached
+      spec:
+        containers:
+        - image: memcached@sha256:60e2ce3e8215d7ca744bbbafd9b11b7a95961ea068e1ad51a6c361ad3a9bd34b
+          imagePullPolicy: Always
+          name: memcached
+          ports:
+          - containerPort: 11211
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/desired-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2018-02-16 09:34:43 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 09:33:38 +0000 UTC
+      openshift.io/deployer-pod.name: mongodb-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: mongodb
+      openshift.io/deployment.cancelled: "true"
+      openshift.io/deployment.phase: Failed
+      openshift.io/deployment.replicas: "0"
+      openshift.io/deployment.status-reason: newer deployment was found running
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"mongodb","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/mongodb","uid":"77578c1c-12fc-11e8-8e15-02cd6ce74313","resourceVersion":"11791892","generation":2,"creationTimestamp":"2018-02-16T09:33:37Z","labels":{"app":"mongodb"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["mongodb"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"mongodb:3.2"},"lastTriggeredImage":"centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e"}}],"replicas":1,"test":false,"selector":{"app":"mongodb","deploymentconfig":"mongodb"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"mongodb","deploymentconfig":"mongodb"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"volumes":[{"name":"mongodb-1","emptyDir":{}}],"containers":[{"name":"mongodb","image":"centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e","ports":[{"containerPort":27017,"protocol":"TCP"}],"resources":{},"volumeMounts":[{"name":"mongodb-1","mountPath":"/var/lib/mongodb/data"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":2,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T09:33:37Z","lastTransitionTime":"2018-02-16T09:33:37Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: mongodb
+      openshift.io/deployment-config.name: mongodb
+    name: mongodb-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: mongodb
+      uid: 77578c1c-12fc-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 0
+    selector:
+      app: mongodb
+      deployment: mongodb-1
+      deploymentconfig: mongodb
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: mongodb
+          openshift.io/deployment.name: mongodb-1
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: mongodb
+          deployment: mongodb-1
+          deploymentconfig: mongodb
+      spec:
+        containers:
+        - image: centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e
+          imagePullPolicy: Always
+          name: mongodb
+          ports:
+          - containerPort: 27017
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mongodb/data
+            name: mongodb-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: mongodb-1
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-02-16 09:34:51 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 09:34:44 +0000 UTC
+      openshift.io/deployer-pod.name: mongodb-2-deploy
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: mongodb
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"mongodb","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/mongodb","uid":"77578c1c-12fc-11e8-8e15-02cd6ce74313","resourceVersion":"11792103","generation":3,"creationTimestamp":"2018-02-16T09:33:37Z","labels":{"app":"mongodb"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["mongodb"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"mongodb:3.2"},"lastTriggeredImage":"centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"app":"mongodb","deploymentconfig":"mongodb"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"mongodb","deploymentconfig":"mongodb"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"volumes":[{"name":"mongodb-1","emptyDir":{}}],"containers":[{"name":"mongodb","image":"centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e","ports":[{"containerPort":27017,"protocol":"TCP"}],"env":[{"name":"MONGODB_ADMIN_PASSWORD","value":"password"}],"resources":{},"volumeMounts":[{"name":"mongodb-1","mountPath":"/var/lib/mongodb/data"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":3,"replicas":1,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":1,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T09:33:37Z","lastTransitionTime":"2018-02-16T09:33:37Z","message":"Deployment config does not have minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2018-02-16T09:33:41Z","lastTransitionTime":"2018-02-16T09:33:41Z","reason":"ReplicationControllerUpdated","message":"replication controller \"mongodb-1\" is progressing"}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: mongodb
+      openshift.io/deployment-config.name: mongodb
+    name: mongodb-2
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: mongodb
+      uid: 77578c1c-12fc-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 1
+    selector:
+      app: mongodb
+      deployment: mongodb-2
+      deploymentconfig: mongodb
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "2"
+          openshift.io/deployment-config.name: mongodb
+          openshift.io/deployment.name: mongodb-2
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: mongodb
+          deployment: mongodb-2
+          deploymentconfig: mongodb
+      spec:
+        containers:
+        - env:
+          - name: MONGODB_ADMIN_PASSWORD
+            value: password
+          image: centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e
+          imagePullPolicy: Always
+          name: mongodb
+          ports:
+          - containerPort: 27017
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mongodb/data
+            name: mongodb-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: mongodb-1
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2018-02-16 09:31:41 +0000 UTC
+      openshift.io/deployer-pod.created-at: 2018-02-16 09:31:19 +0000 UTC
+      openshift.io/deployer-pod.name: mysql-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: mysql
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"mysql","namespace":"campus-test","selfLink":"/apis/apps.openshift.io/v1/namespaces/campus-test/deploymentconfigs/mysql","uid":"247ba300-12fc-11e8-8e15-02cd6ce74313","resourceVersion":"11791498","generation":2,"creationTimestamp":"2018-02-16T09:31:18Z","labels":{"app":"mysql"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["mysql"],"from":{"kind":"ImageStreamTag","namespace":"openshift","name":"mysql:5.7"},"lastTriggeredImage":"centos/mysql-57-centos7@sha256:c169a0ce84104cc68cfe706b7fa3e4b5f1c038963c9384b613fb2f227ee57f97"}}],"replicas":1,"test":false,"selector":{"app":"mysql","deploymentconfig":"mysql"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"mysql","deploymentconfig":"mysql"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"volumes":[{"name":"mysql-1","emptyDir":{}}],"containers":[{"name":"mysql","image":"centos/mysql-57-centos7@sha256:c169a0ce84104cc68cfe706b7fa3e4b5f1c038963c9384b613fb2f227ee57f97","ports":[{"containerPort":3306,"protocol":"TCP"}],"env":[{"name":"MYSQL_USER","value":"fun"},{"name":"MYSQL_PASSWORD","value":"password"},{"name":"MYSQL_DATABASE","value":"edxapp"}],"resources":{},"volumeMounts":[{"name":"mysql-1","mountPath":"/var/lib/mysql/data"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":2,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-02-16T09:31:18Z","lastTransitionTime":"2018-02-16T09:31:18Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: mysql
+      openshift.io/deployment-config.name: mysql
+    name: mysql-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: mysql
+      uid: 247ba300-12fc-11e8-8e15-02cd6ce74313
+  spec:
+    replicas: 1
+    selector:
+      app: mysql
+      deployment: mysql-1
+      deploymentconfig: mysql
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: mysql
+          openshift.io/deployment.name: mysql-1
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: mysql
+          deployment: mysql-1
+          deploymentconfig: mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            value: fun
+          - name: MYSQL_PASSWORD
+            value: password
+          - name: MYSQL_DATABASE
+            value: edxapp
+          image: centos/mysql-57-centos7@sha256:c169a0ce84104cc68cfe706b7fa3e4b5f1c038963c9384b613fb2f227ee57f97
+          imagePullPolicy: Always
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql/data
+            name: mysql-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: mysql-1
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: fun-platform-cms
+    name: cms
+  spec:
+    ports:
+    - name: 8000-tcp
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    selector:
+      deploymentconfig: fun-platform-cms
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    labels:
+      app: fun-platform-nginx
+    name: fun-platform-nginx
+  spec:
+    ports:
+    - name: 8071-tcp
+      port: 8071
+      protocol: TCP
+      targetPort: 8071
+    - name: 8081-tcp
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+    selector:
+      deploymentconfig: fun-platform-nginx
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      gluster.kubernetes.io/provisioned-for-pvc: media
+    name: glusterfs-dynamic-media
+  spec:
+    ports:
+    - port: 1
+      protocol: TCP
+      targetPort: 1
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      gluster.kubernetes.io/provisioned-for-pvc: static
+    name: glusterfs-dynamic-static
+  spec:
+    ports:
+    - port: 1
+      protocol: TCP
+      targetPort: 1
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: fun-platform-lms
+    name: lms
+  spec:
+    ports:
+    - name: 8000-tcp
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    selector:
+      deploymentconfig: fun-platform-lms
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    labels:
+      app: memcached
+    name: memcached
+  spec:
+    ports:
+    - name: 11211-tcp
+      port: 11211
+      protocol: TCP
+      targetPort: 11211
+    selector:
+      deploymentconfig: memcached
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    labels:
+      app: mongodb
+    name: mongodb
+  spec:
+    ports:
+    - name: 27017-tcp
+      port: 27017
+      protocol: TCP
+      targetPort: 27017
+    selector:
+      deploymentconfig: mongodb
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    labels:
+      app: mysql
+    name: mysql
+  spec:
+    ports:
+    - name: 3306-tcp
+      port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      deploymentconfig: mysql
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"DeploymentConfig","metadata":{"annotations":{},"labels":{"app":"fun-platform-cms"},"name":"fun-platform-cms","namespace":"campus-test"},"spec":{"replicas":1,"selector":{"app":"fun-platform-cms","deploymentconfig":"fun-platform-cms"},"template":{"metadata":{"labels":{"app":"fun-platform-cms","deploymentconfig":"fun-platform-cms"}},"spec":{"containers":[{"env":[{"name":"SERVICE_VARIANT","value":"cms"},{"name":"DJANGO_SETTINGS_MODULE","value":"cms.envs.docker_run"}],"image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","name":"fun-platform-cms","volumeMounts":[{"mountPath":"/config","name":"volume-config"},{"mountPath":"/data/media","name":"edxapp-media"},{"mountPath":"/data/static","name":"edxapp-static"}]}],"volumes":[{"configMap":{"defaultMode":420,"name":"config"},"name":"volume-config"},{"name":"edxapp-media","persistentVolumeClaim":{"claimName":"media"}},{"name":"edxapp-static","persistentVolumeClaim":{"claimName":"static"}}]}}}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-cms
+    name: fun-platform-cms
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-cms
+      deploymentconfig: fun-platform-cms
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: fun-platform-cms
+          deploymentconfig: fun-platform-cms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: cms
+          - name: DJANGO_SETTINGS_MODULE
+            value: cms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-cms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+          - mountPath: /data/static
+            name: edxapp-static
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+        - name: edxapp-static
+          persistentVolumeClaim:
+            claimName: static
+    test: false
+    triggers:
+    - type: ConfigChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"DeploymentConfig","metadata":{"annotations":{},"labels":{"app":"fun-platform-lms"},"name":"fun-platform-lms","namespace":"campus-test"},"spec":{"replicas":1,"selector":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"},"template":{"metadata":{"labels":{"app":"fun-platform-lms","deploymentconfig":"fun-platform-lms"}},"spec":{"containers":[{"env":[{"name":"SERVICE_VARIANT","value":"lms"},{"name":"DJANGO_SETTINGS_MODULE","value":"lms.envs.docker_run"}],"image":"docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test","name":"fun-platform-lms","volumeMounts":[{"mountPath":"/config","name":"volume-config"},{"mountPath":"/data/media","name":"edxapp-media"},{"mountPath":"/data/static","name":"edxapp-static"}]}],"volumes":[{"configMap":{"defaultMode":420,"name":"config"},"name":"volume-config"},{"name":"edxapp-media","persistentVolumeClaim":{"claimName":"media"}},{"name":"edxapp-static","persistentVolumeClaim":{"claimName":"static"}}]}}}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-lms
+    name: fun-platform-lms
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-lms
+      deploymentconfig: fun-platform-lms
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: fun-platform-lms
+          deploymentconfig: fun-platform-lms
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_VARIANT
+            value: lms
+          - name: DJANGO_SETTINGS_MODULE
+            value: lms.envs.docker_run
+          image: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+          imagePullPolicy: IfNotPresent
+          name: fun-platform-lms
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config
+            name: volume-config
+          - mountPath: /data/media
+            name: edxapp-media
+          - mountPath: /data/static
+            name: edxapp-static
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: config
+          name: volume-config
+        - name: edxapp-media
+          persistentVolumeClaim:
+            claimName: media
+        - name: edxapp-static
+          persistentVolumeClaim:
+            claimName: static
+    test: false
+    triggers:
+    - type: ConfigChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: fun-platform-nginx
+    name: fun-platform-nginx
+  spec:
+    replicas: 1
+    selector:
+      app: fun-platform-nginx
+      deploymentconfig: fun-platform-nginx
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: fun-platform-nginx
+          deploymentconfig: fun-platform-nginx
+      spec:
+        containers:
+        - image: docker-registry.default.svc:5000/campus-test/fun-platform-nginx@sha256:b43f25a24cddbbbfc48969a27bc152035b7c0c03f41d61192285c6919735892e
+          imagePullPolicy: Always
+          name: fun-platform-nginx
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: volume-wnu9m
+          - mountPath: /data/media
+            name: volume-s86s9
+            readOnly: true
+          - mountPath: /data/static
+            name: volume-s6ba4
+            readOnly: true
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: nginx
+          name: volume-wnu9m
+        - name: volume-s86s9
+          persistentVolumeClaim:
+            claimName: media
+        - name: volume-s6ba4
+          persistentVolumeClaim:
+            claimName: static
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - fun-platform-nginx
+        from:
+          kind: ImageStreamTag
+          name: fun-platform-nginx:test
+          namespace: campus-test
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: memcached
+    name: memcached
+  spec:
+    replicas: 1
+    selector:
+      app: memcached
+      deploymentconfig: memcached
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: memcached
+          deploymentconfig: memcached
+      spec:
+        containers:
+        - image: memcached@sha256:60e2ce3e8215d7ca744bbbafd9b11b7a95961ea068e1ad51a6c361ad3a9bd34b
+          imagePullPolicy: Always
+          name: memcached
+          ports:
+          - containerPort: 11211
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - memcached
+        from:
+          kind: ImageStreamTag
+          name: memcached:latest
+          namespace: campus-test
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: mongodb
+    name: mongodb
+  spec:
+    replicas: 1
+    selector:
+      app: mongodb
+      deploymentconfig: mongodb
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: mongodb
+          deploymentconfig: mongodb
+      spec:
+        containers:
+        - env:
+          - name: MONGODB_ADMIN_PASSWORD
+            value: password
+          image: centos/mongodb-32-centos7@sha256:60b2d83ba0827030dd2e240292f56208f8001e77da306713f0074dd1a009c08e
+          imagePullPolicy: Always
+          name: mongodb
+          ports:
+          - containerPort: 27017
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mongodb/data
+            name: mongodb-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: mongodb-1
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - mongodb
+        from:
+          kind: ImageStreamTag
+          name: mongodb:3.2
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftWebConsole
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: mysql
+    name: mysql
+  spec:
+    replicas: 1
+    selector:
+      app: mysql
+      deploymentconfig: mysql
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: mysql
+          deploymentconfig: mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            value: fun
+          - name: MYSQL_PASSWORD
+            value: password
+          - name: MYSQL_DATABASE
+            value: edxapp
+          image: centos/mysql-57-centos7@sha256:c169a0ce84104cc68cfe706b7fa3e4b5f1c038963c9384b613fb2f227ee57f97
+          imagePullPolicy: Always
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql/data
+            name: mysql-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: mysql-1
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - mysql
+        from:
+          kind: ImageStreamTag
+          name: mysql:5.7
+          namespace: openshift
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    name: fun-platform-edxapp
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/campus-test/fun-platform-edxapp:test
+      generation: null
+      importPolicy: {}
+      name: test
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    name: fun-platform-nginx
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/campus-test/fun-platform-nginx:test
+      generation: null
+      importPolicy: {}
+      name: test
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/image.dockerRepositoryCheck: 2018-02-16T16:56:22Z
+    creationTimestamp: null
+    generation: 2
+    labels:
+      app: memcached
+    name: memcached
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+        openshift.io/imported-from: memcached
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/campus-test/memcached:latest
+      generation: 2
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Route","metadata":{"annotations":{},"labels":{"app":"fun-platform-cms"},"name":"cms","namespace":"campus-test"},"spec":{"host":"campus-test-cms.dev.fun-mooc.fr","port":{"targetPort":"8081-tcp"},"tls":{"termination":"edge"},"to":{"kind":"Service","name":"fun-platform-nginx","weight":100}}}
+    creationTimestamp: null
+    labels:
+      app: fun-platform-cms
+    name: cms
+  spec:
+    host: campus-test-cms.dev.fun-mooc.fr
+    port:
+      targetPort: 8081-tcp
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: fun-platform-nginx
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2018-02-16T16:22:51Z
+        status: "True"
+        type: Admitted
+      host: campus-test-cms.dev.fun-mooc.fr
+      routerName: router
+      wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Route","metadata":{"annotations":{},"labels":{"app":"fun-platform-lms"},"name":"lms","namespace":"campus-test"},"spec":{"host":"campus-test-lms.dev.fun-mooc.fr","port":{"targetPort":"8071-tcp"},"tls":{"termination":"edge"},"to":{"kind":"Service","name":"fun-platform-nginx","weight":100}}}
+    creationTimestamp: null
+    labels:
+      app: fun-platform-lms
+    name: lms
+  spec:
+    host: campus-test-lms.dev.fun-mooc.fr
+    port:
+      targetPort: 8071-tcp
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: fun-platform-nginx
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: 2018-02-16T15:16:17Z
+        status: "True"
+        type: Admitted
+      host: campus-test-lms.dev.fun-mooc.fr
+      routerName: router
+      wildcardPolicy: None
+kind: List
+metadata: {}
